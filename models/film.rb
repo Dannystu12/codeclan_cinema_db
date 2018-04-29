@@ -27,7 +27,8 @@ class Film
   end
 
   def get_customers
-    Ticket.get_customers_by_film @id
+    showings = Showing.get_showings_by_film @id
+    showings.map{|showing| Ticket.get_customers_by_showing(showing.id)}.flatten
   end
 
   def customer_count
@@ -36,7 +37,7 @@ class Film
 
   def refresh
     this_film = self.class.find_id @id
-    @title = this_film.name
+    @title = this_film.title
     @price = this_film.price
   end
 

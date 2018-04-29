@@ -3,6 +3,7 @@ require_relative '../db/sql_runner'
 class Showing
   attr_accessor :capacity, :film_id
   attr_reader :id
+
   DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
   def initialize options
@@ -18,6 +19,20 @@ class Showing
     @id = results[0]["id"].to_i
   end
 
+  def date_time= date_string
+    DateTime.strptime(date_string, DATE_TIME_FORMAT)
+  end
+
+  def get_price
+    Film.find_id(film_id).price
+  end
+
+  def self.find_id id
+    sql = "SELECT * FROM showings WHERE id = $1"
+    results = SqlRunner.run sql, [id]
+    build_results(results, self).first
+  end
+
   def self.delete_all
     sql = "DELETE FROM showings"
     SqlRunner.run sql
@@ -29,8 +44,10 @@ class Showing
     build_results results, self
   end
 
-  def date_time= date_string
-    DateTime.strptime(date_string, DATE_TIME_FORMAT)
+  def self.get_showings_by_film film_id
+    sql = "SELECT * FROM showings WHERE film_id = $1"
+    results = SqlRunner.run sql, [film_id]
+    build_results results, self
   end
 
   private

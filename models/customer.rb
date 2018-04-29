@@ -26,8 +26,8 @@ class Customer
     SqlRunner.run sql, [@id]
   end
 
-  def buy_ticket film
-    ticket = Ticket.new({"customer_id" => @id, "film_id" => film.id})
+  def buy_ticket showing
+    ticket = Ticket.new({"customer_id" => @id, "showing_id" => showing.id})
     ticket.create
     refresh
     ticket
@@ -38,7 +38,8 @@ class Customer
   end
 
   def get_films
-    Ticket.get_films_by_customer @id
+    showings = Ticket.get_showings_by_customer @id
+    showings.map{|showing| Film.find_id(showing.film_id)}
   end
 
   def can_afford? value
