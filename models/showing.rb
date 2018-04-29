@@ -2,7 +2,7 @@ require_relative '../db/sql_runner'
 
 class Showing
   attr_accessor :capacity, :film_id
-  attr_reader :id
+  attr_reader :id, :date_time
 
   DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -48,6 +48,16 @@ class Showing
     sql = "SELECT * FROM showings WHERE film_id = $1"
     results = SqlRunner.run sql, [film_id]
     build_results results, self
+  end
+
+  def self.get_most_popular_showing film_id
+    sql = "SELECT showings.id, COUNT(tickets.id) AS c
+    FROM showings JOIN tickets ON showings.id = tickets.showing_id
+    WHERE showings.film_id = $1
+    GROUP BY showings.id
+    ORDER BY c DESC"
+    results = SqlRunner.run sql, [film_id]
+    find_id(results[0]["id"])
   end
 
   private

@@ -195,9 +195,36 @@ raise "Wrong film on ticket" unless cheap_ticket.showing_id == another_showing.i
 raise "Customer not charged correctly" unless matthew.funds == matthew_funds_before
 raise "Customer not charged correctly" unless daniel.funds == daniel_funds_before
 
+# Test getting most popular showing for a movie
+daniel.funds = 100
+matthew.funds = 100
+andrew.funds = 100
 
+daniel.update
+matthew.update
+andrew.update
 
+film1 = Film.new({"title" => "Iron Sky", "price" => "1.2"})
+film1.create
 
+showing1 = Showing.new({"capacity" => "4", "film_id" => film1.id, "date_time" => "2018-04-29 16:30:00"})
+showing1.create
+
+showing2 = Showing.new({"capacity" => "2", "film_id" => film1.id, "date_time" => "2018-04-30 17:30:00"})
+showing2.create
+
+ticket1 = Ticket.new({"customer_id" => matthew.id, "showing_id" => showing2.id})
+ticket1.create
+
+ticket2 = Ticket.new({"customer_id" => daniel.id, "showing_id" => showing2.id})
+ticket2.create
+
+ticket3 = Ticket.new({"customer_id" => andrew.id, "showing_id" => showing1.id})
+ticket3.create
+
+most_popular = Showing.get_most_popular_showing film1.id
+
+raise "Wrong showing returned as most popular" unless showing2.date_time == most_popular.date_time
 
 
 binding.pry
