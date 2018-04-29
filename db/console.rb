@@ -3,6 +3,9 @@ require_relative "../models/customer"
 require_relative "../models/film"
 require_relative "../models/ticket"
 
+Customer.delete_all
+Film.delete_all
+
 customer1 = Customer.new({"name" => "Daniel", "funds" => 50})
 customer1.create
 daniel = Customer.find_name "Daniel"
@@ -19,5 +22,16 @@ connor = Customer.find_name "Connor"
 customers1 = Customer.read_all
 Customer.delete_all
 customers2 = Customer.read_all
+
+film1 = Film.new({"title" => "The Room", "price" => "9.80"})
+film1.create
+film1.price = 10
+film1.update
+the_room = Film.find_title "The Room"
+the_room2 = Film.find_id film1.id
+films = Film.read_all
+film1.delete
+films2 = Film.read_all
+
 binding.pry
 nil
