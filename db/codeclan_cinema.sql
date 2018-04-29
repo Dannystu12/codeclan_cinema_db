@@ -16,7 +16,7 @@ CREATE TABLE customers(
   CONSTRAINT funds_positive CHECK (funds >= 0)
 );
 
-CREATE TABLE tickes(
+CREATE TABLE tickets(
   id SERIAL4 PRIMARY KEY,
   customer_id INT4 REFERENCES customers(id) NOT NULL,
   film_id INT4 REFERENCES films(id) NOT NULL
