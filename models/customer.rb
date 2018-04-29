@@ -30,6 +30,22 @@ class Customer
     Ticket.get_films_by_customer @id
   end
 
+  def can_afford? value
+    @funds >= value
+  end
+
+  def pay value
+    return unless can_afford? value
+    @funds -= value
+    update
+  end
+
+  def refresh
+    this_customer = self.class.find_id @id
+    @name = this_customer.name
+    @funds = this_customer.funds
+  end
+
   def self.read_all
     sql = "SELECT * FROM customers"
     results = SqlRunner.run sql

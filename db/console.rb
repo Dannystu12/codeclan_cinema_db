@@ -56,6 +56,30 @@ andrew_films = andrew.get_films
 anchorman_customers = film2.get_customers
 the_room_customers = the_room.get_customers
 
+# Test buying tickets reduces customer funds
+original_ticket_count = Ticket.read_all.size
+
+cheap_film = Film.new({"title" => "Iron Sky", "price" => "1.2"})
+cheap_film.create
+
+expensive_film = Film.new({"title" => "Iron Sky 2", "price" => "999"})
+expensive_film.create
+
+matthew = Customer.new({"name" => "Matthew", "funds" => "1.2"})
+matthew.create
+
+cheap_ticket = Ticket.new({"customer_id" => matthew.id, "film_id" => cheap_film.id})
+cheap_ticket.create
+matthew.refresh
+raise "Funds not deducted correctly" unless matthew.funds == 0
+
+expensive_ticket = Ticket.new({"customer_id" => matthew.id, "film_id" => expensive_film.id})
+expensive_ticket.create
+matthew.refresh
+raise "Funds changing when cannot afford film" unless matthew.funds == 0
+
+raise "incorrect number of tickets created" unless Ticket.read_all.size - original_ticket_count == 1
+
 
 
 binding.pry

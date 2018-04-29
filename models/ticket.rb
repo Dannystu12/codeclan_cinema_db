@@ -11,6 +11,10 @@ class Ticket
   end
 
   def create
+    film = Film.find_id @film_id
+    customer = Customer.find_id @customer_id
+    return unless customer.can_afford?(film.price)
+    customer.pay(film.price)
     sql = "INSERT INTO tickets(customer_id, film_id) VALUES($1, $2) RETURNING id"
     results = SqlRunner.run sql, [@customer_id, @film_id]
     @id = results[0]["id"].to_i
@@ -24,6 +28,12 @@ class Ticket
   def delete
     sql = "DELETE FROM tickets WHERE id = $1"
     SqlRunner.run sql, [@id]
+  end
+
+  def refresh
+    this_ticket = find_id @id
+    @customer_id = this_ticket.customer_id
+    @film_id = this_ticket.film_id
   end
 
   def self.read_all

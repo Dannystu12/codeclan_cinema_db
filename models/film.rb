@@ -30,6 +30,12 @@ class Film
     Ticket.get_customers_by_film @id
   end
 
+  def refresh
+    this_film = find_id @id
+    @title = this_film.name
+    @price = this_film.price
+  end
+
   def self.read_all
     sql = "SELECT * FROM films"
     results = SqlRunner.run sql
