@@ -80,6 +80,18 @@ raise "Funds changing when cannot afford film" unless matthew.funds == 0
 
 raise "incorrect number of tickets created" unless Ticket.read_all.size - original_ticket_count == 1
 
+# Test buying ticket from customer
+original_ticket_count = Ticket.read_all.size
+
+matthew.funds = 1.2
+matthew.update
+matthew.buy_ticket cheap_film
+raise "Funds not deducted correctly" unless matthew.funds == 0
+raise "incorrect number of tickets created" unless Ticket.read_all.size - original_ticket_count == 1
+
+# Test getting ticket count for a customer
+raise "Wrong ticket count retrieved" unless matthew.ticket_count == 2
+raise "Wrong customer count retrieved" unless cheap_film.customer_count == 2
 
 
 binding.pry

@@ -26,6 +26,17 @@ class Customer
     SqlRunner.run sql, [@id]
   end
 
+  def buy_ticket film
+    ticket = Ticket.new({"customer_id" => @id, "film_id" => film.id})
+    ticket.create
+    refresh
+    ticket
+  end
+
+  def ticket_count
+    get_films.size
+  end
+
   def get_films
     Ticket.get_films_by_customer @id
   end

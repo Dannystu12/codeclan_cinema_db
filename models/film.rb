@@ -30,6 +30,10 @@ class Film
     Ticket.get_customers_by_film @id
   end
 
+  def customer_count
+    get_customers.count
+  end
+
   def refresh
     this_film = find_id @id
     @title = this_film.name
