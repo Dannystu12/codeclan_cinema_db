@@ -12,6 +12,7 @@ class Ticket
 
   def create
     showing = Showing.find_id @showing_id
+    return unless showing.has_capacity?
     customer = Customer.find_id @customer_id
     return unless customer.can_afford?(showing.get_price)
     customer.pay(showing.get_price)
@@ -26,10 +27,15 @@ class Ticket
     old_customer = Customer.find_id(current_ticket.customer_id)
     new_showing = Showing.find_id(@showing_id)
     new_customer = Customer.find_id(@customer_id)
+
+    unless old_showing.id == new_showing.id
+      return unless new_showing.has_capacity?
+    end
+
     old_customer.refund old_showing.get_price # refund original customer
     new_customer.refresh #refresh new customer in case it is the same as old
 
-    unless new_customer.can_afford? new_showing.get_price
+    unless new_customer.can_afford?(new_showing.get_price)
       old_customer.pay old_showing.get_price
       warn "Could not update ticket as customer #{new_customer.id} could not afford showing #{new_showing.id}"
       return
@@ -78,13 +84,6 @@ class Ticket
     tickets = build_results(results, self)
     tickets.map{|ticket| Customer.find_id(ticket.customer_id)}
   end
-
-  # def self.get_customers_by_film film_id
-  #   sql = "SELECT * FROM tickets WHERE film_id = $1"
-  #   results = SqlRunner.run sql, [film_id]
-  #   tickets = build_results(results, self)
-  #   tickets.map{|ticket| Customer.find_id(ticket.customer_id)}
-  # end
 
   def self.find_id id
     sql = "SELECT * FROM tickets WHERE id = $1"

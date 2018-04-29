@@ -226,6 +226,14 @@ most_popular = Showing.get_most_popular_showing film1.id
 
 raise "Wrong showing returned as most popular" unless showing2.date_time == most_popular.date_time
 
+# Test trying to issue ticket beyond capacity
+andrew_funds_before = andrew.funds
+ticket_count_before = Ticket.read_all.size
+ticket4 = Ticket.new({"customer_id" => andrew.id, "showing_id" => showing2.id})
+ticket4.create
+
+raise "Ticket issued over capacity" unless Ticket.read_all.size == ticket_count_before
+raise "Customer charged for ticket over capacity" unless andrew_funds_before == andrew.funds
 
 binding.pry
 nil

@@ -27,6 +27,10 @@ class Showing
     Film.find_id(film_id).price
   end
 
+  def has_capacity?
+    Ticket.get_customers_by_showing(@id).size < @capacity
+  end
+
   def self.find_id id
     sql = "SELECT * FROM showings WHERE id = $1"
     results = SqlRunner.run sql, [id]
