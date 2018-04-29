@@ -48,6 +48,15 @@ daniel_ticket = Ticket.find_id(Ticket.read_all()[0].id)
 tickets = Ticket.read_all
 ticket1.delete
 tickets2 = Ticket.read_all
+ticket1.create
+
+#test getting films by customer and customers by film
+daniel_films = daniel.get_films
+andrew_films = andrew.get_films
+anchorman_customers = film2.get_customers
+the_room_customers = the_room.get_customers
+
+
 
 binding.pry
 nil

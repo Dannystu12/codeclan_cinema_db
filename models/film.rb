@@ -26,6 +26,10 @@ class Film
     SqlRunner.run sql, [@id]
   end
 
+  def get_customers
+    Ticket.get_customers_by_film @id
+  end
+
   def self.read_all
     sql = "SELECT * FROM films"
     results = SqlRunner.run sql

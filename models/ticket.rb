@@ -37,8 +37,18 @@ class Ticket
     SqlRunner.run sql
   end
 
-  def self.find_title title
+  def self.get_films_by_customer customer_id
+    sql = "SELECT * FROM tickets WHERE customer_id = $1"
+    results = SqlRunner.run sql, [customer_id]
+    tickets = build_results(results, self)
+    tickets.map{|ticket| Film.find_id(ticket.film_id)}
+  end
 
+  def self.get_customers_by_film film_id
+    sql = "SELECT * FROM tickets WHERE film_id = $1"
+    results = SqlRunner.run sql, [film_id]
+    tickets = build_results(results, self)
+    tickets.map{|ticket| Customer.find_id(ticket.customer_id)}
   end
 
   def self.find_id id
