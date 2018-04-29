@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS tickets;
+DROP TABLE IF EXISTS screenings;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS films;
 
@@ -20,4 +21,12 @@ CREATE TABLE tickets(
   id SERIAL4 PRIMARY KEY,
   customer_id INT4 REFERENCES customers(id) NOT NULL,
   film_id INT4 REFERENCES films(id) NOT NULL
+);
+
+CREATE TABLE screenings(
+  id SERIAL4 PRIMARY KEY,
+  capacity INT4 NOT NULL
+  CONSTRAINT capacity_positive CHECK (capacity >= 0),
+  film_id INT4 REFERENCES films(id) NOT NULL,
+  date_time TIMESTAMP NOT NULL
 );
