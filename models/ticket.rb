@@ -21,6 +21,21 @@ class Ticket
   end
 
   def update
+    current_ticket = self.class.find_id @id
+    old_film = Film.find_id(current_ticket.film_id)
+    old_customer = Customer.find_id(current_ticket.customer_id)
+    new_film = Film.find_id(@film_id)
+    new_customer = Customer.find_id(@customer_id)
+    old_customer.refund old_film.price # refund original customer
+    new_customer.refresh #refresh new customer in case it is the same as old
+
+    unless new_customer.can_afford? new_film.price
+      old_customer.pay old_film.price
+      warn "Could not update ticket as customer #{new_customer.id} could not afford film #{new_film.id}"
+      return
+    end
+
+    new_customer.pay(new_film.price)
     sql = "UPDATE tickets SET(customer_id, film_id) = ($1, $2) WHERE id = $3"
     SqlRunner.run sql, [@customer_id, @film_id, @id]
   end
@@ -31,7 +46,7 @@ class Ticket
   end
 
   def refresh
-    this_ticket = find_id @id
+    this_ticket = self.class.find_id @id
     @customer_id = this_ticket.customer_id
     @film_id = this_ticket.film_id
   end

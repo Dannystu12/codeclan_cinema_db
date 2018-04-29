@@ -35,7 +35,7 @@ class Film
   end
 
   def refresh
-    this_film = find_id @id
+    this_film = self.class.find_id @id
     @title = this_film.name
     @price = this_film.price
   end

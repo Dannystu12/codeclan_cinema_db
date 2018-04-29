@@ -51,6 +51,11 @@ class Customer
     update
   end
 
+  def refund value
+    @funds += value
+    update
+  end
+
   def refresh
     this_customer = self.class.find_id @id
     @name = this_customer.name
