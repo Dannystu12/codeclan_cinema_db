@@ -2,8 +2,10 @@ require "pry"
 require_relative "../models/customer"
 require_relative "../models/film"
 require_relative "../models/ticket"
+require_relative "../models/showing"
 
 Ticket.delete_all
+Showing.delete_all
 Customer.delete_all
 Film.delete_all
 
@@ -167,6 +169,14 @@ raise "Wrong customer on ticket" unless cheap_ticket.customer_id == matthew.id
 raise "Wrong film on ticket" unless cheap_ticket.film_id == another_film.id
 raise "Customer not charged correctly" unless matthew.funds == matthew_funds_before
 raise "Customer not charged correctly" unless daniel.funds == daniel_funds_before
+
+# Advanced extensions
+# create a showing
+showing1 = Showing.new({"capacity" => "2", "film_id" => cheap_film.id, "date_time" => "2018-04-29 16:30:00"})
+showing1.create
+raise "Showing was not created" unless Showing.read_all.size == 1
+
+
 
 binding.pry
 nil
